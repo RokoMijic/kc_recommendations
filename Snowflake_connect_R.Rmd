@@ -1,0 +1,114 @@
+## Connect to Snowflake R
+
+```{r}
+# devtools::install_github("zacharyrsmith/RSnowflake")
+```
+
+```{r}
+install.packages("rJava",dependencies = TRUE)
+```
+
+```{r}
+install.packages("rJava")
+```
+
+```{r}
+install.packages("devtools")
+```
+
+```{r}
+devtools::install_github("snowflakedb/dplyr-snowflakedb")
+```
+
+```{r}
+#Laad benodigde packages
+library(dplyr)
+library(dplyr.snowflakedb)
+library(dbplyr)
+```
+
+```{r}
+# Laad een custom connector functie die enkel een emailadres vereist
+connectSnowflakejoin <- function(username, db = "PROD_HO" ){
+  # Zet locatie van Snowflake JDBC driver
+  options(dplyr.jdbc.classpath = "~/rstudio-share/JDBC-Snowflake/snowflake-jdbc-3.11.1.jar")
+  
+  # Zet Snowflake database connectie op
+  snowflake_con <- src_snowflakedb(user = username,
+                                   host = "ba32978.eu-west-1.privatelink.snowflakecomputing.com",
+                                   opts = list(private_key_file = paste0(Sys.getenv("HOME"), "/.ssh/rsa_key.pem"),
+                                               warehouse = "COMPUTE_WH",
+                                               role = "reporter_HO",
+                                               db = db))
+}
+```
+
+```{r}
+connectSnowflake <- function(username, db = "PROD_HO", schema = schema){
+  # Zet locatie van Snowflake JDBC driver
+  options(dplyr.jdbc.classpath = "~/rstudio-share/JDBC-Snowflake/snowflake-jdbc-3.11.1.jar")
+  
+  # Zet Snowflake database connectie op
+  snowflake_con <- src_snowflakedb(user = username,
+                                   host = "ba32978.eu-west-1.privatelink.snowflakecomputing.com",
+                                   opts = list(private_key_file = paste0(Sys.getenv("HOME"), "/.ssh/rsa_key.pem"),
+                                               warehouse = "COMPUTE_WH",
+                                               role = "reporter_HO",
+                                               db = db,
+                                               schema = schema))
+  
+}
+
+```
+
+```{r}
+listSnowflakeTables <- function(con){
+  schemename <- dbGetQuery(con$con, "SELECT CURRENT_SCHEMA()")$`CURRENT_SCHEMA()`
+  if(!is.na(schemename)){
+    querystr <- paste(" IN", schemename)
+  }else{
+    querystr <- ""
+  }
+  dbGetQuery(con$con, paste0("SHOW TABLES", querystr))$name
+}
+```
+
+```{r}
+# Query and return
+snowflake_conjoin<- connectSnowflakejoin(username = "roko.mijic@ond.vlaanderen.be")
+snowflake_conATA<- connectSnowflake(username = "roko.mijic@ond.vlaanderen.be", schema="HO_ATA")
+snowflake_conMAT<- connectSnowflake(username = "roko.mijic@ond.vlaanderen.be", schema="HO_MATILLION")
+
+tablenamesATA <- listSnowflakeTables(snowflake_conATA)
+tablenamesATA
+```
+
+```{r}
+
+
+
+
+
+
+
+
+
+
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```

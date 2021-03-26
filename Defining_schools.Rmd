@@ -1,0 +1,119 @@
+---
+jupyter:
+  jupytext:
+    formats: ipynb,Rmd
+    text_representation:
+      extension: .Rmd
+      format_name: rmarkdown
+      format_version: '1.2'
+      jupytext_version: 1.4.2
+  kernelspec:
+    display_name: R
+    language: R
+    name: ir
+---
+
+## Synthetic Student Data R 
+
+```{r}
+library(dplyr, warn.conflicts=FALSE)
+library(ggplot2, warn.conflicts=FALSE)
+```
+
+```{r}
+num_students <- 500000
+num_school_units <- 30000
+num_insp_units <- 1000
+num_rows <- 4500000
+
+schools_per_ins = num_school_units %/% num_insp_units
+```
+
+```{r}
+dataset <- data.frame(  studentID   =  rep( c(1:num_students) , each = 10)           , 
+                        year        =  rep( c(2010:2019)     , num_students ) 
+                     )
+```
+
+```{r}
+prob_dist =  c(rep(0.001, 90), rep(0.036, 10),  0.1, rep(0.036, 10),  rep(0.001, 90)) 
+
+dataset["move"] <- sample(c(-100:100), size=nrow(dataset), replace=TRUE, prob=prob_dist )
+```
+
+```{r}
+dataset["school_unit_u"] <- ( dataset["studentID"] + dataset["move"] )  %% num_school_units 
+```
+
+```{r}
+dataset["inspection_unit_u"] <- ( dataset["school_unit_u"] %/% (schools_per_ins) + ( dataset["school_unit_u"]  %%  17 == 0)*(-171 + dataset["school_unit_u"] %% 371) ) %% num_insp_units
+```
+
+```{r}
+# dataset["school_unit"] <-  dataset["school_unit_u"]
+dataset["school_unit"] <- ( dataset["school_unit_u"]*119 + 19  ) %% num_school_units
+```
+
+```{r}
+# dataset["inspection_unit"] <- dataset["inspection_unit_u"]
+dataset["inspection_unit"] <- ( dataset["inspection_unit_u"]*37 +189   ) %% num_insp_units
+```
+
+```{r}
+dataset <- dataset[c("studentID", "year",  "school_unit", "inspection_unit")]
+```
+
+```{r}
+head(dataset, n=5)
+```
+
+```{r}
+data_units <- dataset[c("school_unit", "inspection_unit")]  %>% distinct() %>% arrange(school_unit)
+```
+
+```{r}
+saved <- options(repr.plot.width=2.5, repr.plot.height=2)
+ggplot(data_units, aes(x = school_unit, y = inspection_unit), size=4) + geom_point(aes(), size=0.1, alpha = 0.1)
+options(saved)
+```
+
+```{r}
+head(data_units, n=5)
+```
+
+```{r}
+data_units %>% filter(inspection_unit == 241)
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+# set.seed(1)
+# dataset <- data.frame(A = sample(c(2010:2019), 1000, rep = TRUE),      B = rnorm(1000))
+```
+
+```{r}
+# sample(c(-100:100), size=50, replace=TRUE, prob=c(rep(0.0005, 100), 0.9,  rep(0.0005, 100))   )
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
