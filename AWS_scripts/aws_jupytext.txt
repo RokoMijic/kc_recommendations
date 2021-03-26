@@ -1,0 +1,30 @@
+#!/bin/bash
+
+set -e
+
+# OVERVIEW
+# This script sets username and email address in Git config, and installs htop 
+
+# PARAMETERS
+YOUR_USER_NAME="r"
+YOUR_EMAIL_ADDRESS="r@r.r"
+
+sudo -u ec2-user -i <<EOF
+git config --global user.name "$YOUR_USER_NAME"
+git config --global user.email "$YOUR_EMAIL_ADDRESS"
+EOF
+
+echo "installing jupytext plugin into the jupyter(lab) environment"
+
+sudo -u ec2-user -i <<EOF
+
+source /home/ec2-user/anaconda3/bin/activate /home/ec2-user/anaconda3/envs/JupyterSystemEnv
+
+pip install jupytext --upgrade
+jupyter labextension install jupyterlab-jupytext
+
+echo c.NotebookApp.contents_manager_class="jupytext.TextFileContentsManager" >> /home/ec2-user/.jupyter/jupyter_notebook_config.py
+
+sudo initctl restart jupyter-server --no-wait
+
+EOF

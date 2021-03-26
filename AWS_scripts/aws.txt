@@ -1,0 +1,8 @@
+git config --global user.name "r"
+
+git config --global user.email r@r.r
+
+
+chmod 600 id_rsa 
+
+git log --all --decorate --graph

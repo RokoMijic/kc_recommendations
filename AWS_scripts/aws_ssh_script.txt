@@ -1,0 +1,12 @@
+cd ~/.ssh/
+
+echo "ssh-rsa public key goes here" >> id_rsa.pub
+
+echo "-----BEGIN RSA PRIVATE KEY-----
+private key goes here
+-----END RSA PRIVATE KEY-----" >> id_rsa
+
+chmod 600 id_rsa
+chmod 600 id_rsa.pub
+
+ls -al
